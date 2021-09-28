@@ -2,7 +2,7 @@
 
 #include "mvMath.h"
 
-namespace DearPy3D {
+namespace p3d {
 
    static constexpr float CameraTravelSpeed = 12.0f;
    static constexpr float CameraRotationSpeed = 0.004f;

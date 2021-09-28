@@ -1,7 +1,7 @@
 #include "mvCamera.h"
 #include <algorithm>
 
-namespace DearPy3D {
+namespace p3d {
 
     template<typename T>
     static T wrap_angle(T theta) noexcept

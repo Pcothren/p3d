@@ -3,7 +3,7 @@
 #include "mvContext.h"
 #include "mvMesh.h"
 
-namespace DearPy3D {
+namespace p3d {
 
 	namespace Renderer
 	{

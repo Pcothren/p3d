@@ -1,7 +1,7 @@
 #include "mvViewport.h"
 #include "mvContext.h"
 
-namespace DearPy3D {
+namespace p3d {
 
 	static void EnableCursor()
 	{

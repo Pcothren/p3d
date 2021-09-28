@@ -1,6 +1,6 @@
 #include "mvTimer.h"
 
-namespace DearPy3D {
+namespace p3d {
 
 	using namespace std::chrono;
 

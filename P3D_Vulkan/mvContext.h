@@ -7,7 +7,7 @@
 
 #define MV_MAX_FRAMES_IN_FLIGHT 2
 
-namespace DearPy3D {
+namespace p3d {
 
 	//-----------------------------------------------------------------------------
     // forward declarations

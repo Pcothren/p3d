@@ -1,7 +1,7 @@
 #pragma once
 #include <chrono>
 
-namespace DearPy3D {
+namespace p3d {
 
 	class mvTimer
 	{

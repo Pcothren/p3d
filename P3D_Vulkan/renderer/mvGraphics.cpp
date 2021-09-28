@@ -15,7 +15,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     return VK_FALSE;
 }
 
-namespace DearPy3D {
+namespace p3d {
 
     //-----------------------------------------------------------------------------
     // forward declarations

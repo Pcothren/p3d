@@ -3,7 +3,7 @@
 #include <string>
 #include <vulkan/vulkan.h>
 
-namespace DearPy3D {
+namespace p3d {
 
 	struct mvShader
 	{

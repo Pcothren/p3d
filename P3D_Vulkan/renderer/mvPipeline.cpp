@@ -2,7 +2,7 @@
 #include <stdexcept>
 #include "mvContext.h"
 
-namespace DearPy3D {
+namespace p3d {
 
 	void mvFinalizePipeline(mvPipeline& pipeline, std::vector<VkDescriptorSetLayout> descriptorSetLayouts)
 	{
@@ -14,15 +14,61 @@ namespace DearPy3D {
         inputAssembly.topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST;
         inputAssembly.primitiveRestartEnable = VK_FALSE;
 
-        auto attributeDescriptions = pipeline.layout.attributeDescriptions;
-        auto bindingDescriptions = pipeline.layout.bindingDescriptions;
+        std::vector<VkVertexInputAttributeDescription> attributedescriptions;
+        {
+            // position 3D
+            VkVertexInputAttributeDescription description1{};
+            description1.binding = 0;
+            description1.location = 0;
+            description1.format = VK_FORMAT_R32G32B32_SFLOAT;
+            description1.offset = 0;
+
+            // normal
+            VkVertexInputAttributeDescription description2{};
+            description2.binding = 0;
+            description2.location = 1;
+            description2.format = VK_FORMAT_R32G32B32_SFLOAT;
+            description2.offset = sizeof(float)*3;
+
+            // tangent
+            VkVertexInputAttributeDescription description3{};
+            description3.binding = 0;
+            description3.location = 2;
+            description3.format = VK_FORMAT_R32G32B32_SFLOAT;
+            description3.offset = sizeof(float) * 6;
+
+            // bitangent
+            VkVertexInputAttributeDescription description4{};
+            description4.binding = 0;
+            description4.location = 3;
+            description4.format = VK_FORMAT_R32G32B32_SFLOAT;
+            description4.offset = sizeof(float) * 9;
+
+            // texture 2d
+            VkVertexInputAttributeDescription description5{};
+            description5.binding = 0;
+            description5.location = 4;
+            description5.format = VK_FORMAT_R32G32_SFLOAT;
+            description5.offset = sizeof(float) * 12;
+
+            attributedescriptions.push_back(description1);
+            attributedescriptions.push_back(description2);
+            attributedescriptions.push_back(description3);
+            attributedescriptions.push_back(description4);
+            attributedescriptions.push_back(description5);
+        }
+
+        VkVertexInputBindingDescription bindingDescriptions{};
+        bindingDescriptions.binding = 0;
+        bindingDescriptions.stride = sizeof(float) * 14;
+        bindingDescriptions.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
         VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
         vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(bindingDescriptions.size());
-        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
-        vertexInputInfo.pVertexBindingDescriptions = bindingDescriptions.data();
-        vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
+        vertexInputInfo.vertexBindingDescriptionCount = static_cast<uint32_t>(1);
+        vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributedescriptions.size());
+        vertexInputInfo.pVertexBindingDescriptions = &bindingDescriptions;
+        vertexInputInfo.pVertexAttributeDescriptions = attributedescriptions.data();
 
         //---------------------------------------------------------------------
         // vertex shader stage

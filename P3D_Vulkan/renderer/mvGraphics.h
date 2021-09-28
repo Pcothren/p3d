@@ -6,7 +6,7 @@
 #include "mvAllocator.h"
 #include "mvDeletionQueue.h"
 
-namespace DearPy3D {
+namespace p3d {
 
     //-----------------------------------------------------------------------------
     // forward declarations

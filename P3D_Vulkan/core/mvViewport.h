@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace DearPy3D {
+namespace p3d {
 
 	void mvInitializeViewport(int width, int height);
 	void mvProcessViewportEvents();

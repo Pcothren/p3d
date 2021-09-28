@@ -1,6 +1,6 @@
 #include "mvDeletionQueue.h"
 
-namespace DearPy3D {
+namespace p3d {
 
 	void mvDeletionQueue::pushDeletor(std::function<void()>&& function)
 	{

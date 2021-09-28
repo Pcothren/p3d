@@ -1,6 +1,6 @@
 #include "mvContext.h"
 
-namespace DearPy3D {
+namespace p3d {
 
 	extern mvContext* GContext = nullptr;
 

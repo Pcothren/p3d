@@ -17,16 +17,13 @@ target_sources(p3d_vulkan
 		# renderer
 		"renderer/mvRenderer.cpp"
 		"renderer/mvMaterial.cpp"
-		"renderer/mvPointLight.cpp"
 		"renderer/mvDeletionQueue.cpp"
 		"renderer/mvAllocator.cpp"
 		"renderer/mvGraphics.cpp"
 		"renderer/mvCamera.cpp"
 		"renderer/mvBuffer.cpp"
-		"renderer/mvVertexLayout.cpp"
 		"renderer/mvPipeline.cpp"
 		"renderer/mvShader.cpp"
-		"renderer/mvSampler.cpp"
 		"renderer/mvTexture.cpp"
 		"renderer/mvMesh.cpp"
 

@@ -5,7 +5,7 @@
 #include <vulkan/vulkan.h>
 #include "mvContext.h"
 
-namespace DearPy3D {
+namespace p3d {
 
     struct mvBuffer
     {
@@ -16,8 +16,6 @@ namespace DearPy3D {
     };
 
     mvBuffer mvCreateBuffer        (void* data, uint64_t count, uint64_t size, VkBufferUsageFlags flags);
-    mvBuffer mvCreateDynamicBuffer (void* data, uint64_t count, uint64_t size, VkBufferUsageFlags flags);
     void     mvCleanupBuffer       (mvBuffer& buffer);
-    void     mvUpdateBuffer        (mvBuffer& buffer, void* data);
 
 }

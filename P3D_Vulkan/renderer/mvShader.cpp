@@ -21,7 +21,7 @@ static std::vector<char> ReadFile(const std::string& filename)
     return buffer;
 }
 
-namespace DearPy3D {
+namespace p3d {
 
     mvShader mvCreateShader(const std::string& file)
 	{

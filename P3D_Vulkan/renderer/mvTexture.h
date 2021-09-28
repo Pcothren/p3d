@@ -3,7 +3,12 @@
 #include <string>
 #include <vulkan/vulkan.h>
 
-namespace DearPy3D {
+namespace p3d {
+
+	struct mvSampler
+	{
+		VkSampler textureSampler;
+	};
 
 	struct mvTexture
 	{
@@ -14,5 +19,8 @@ namespace DearPy3D {
 
 	mvTexture mvCreateTexture(const std::string& file);
 	void      mvCleanupTexture(mvTexture& texture);
+
+	mvSampler mvCreateSampler();
+	void      mvCleanupSampler(mvSampler& sampler);
 
 }

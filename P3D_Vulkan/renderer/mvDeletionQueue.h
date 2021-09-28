@@ -3,7 +3,7 @@
 #include <functional>
 #include <deque>
 
-namespace DearPy3D {
+namespace p3d {
 
 	class mvDeletionQueue
 	{

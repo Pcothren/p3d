@@ -3,7 +3,7 @@
 
 static VmaAllocator gallocator;
 
-namespace DearPy3D {
+namespace p3d {
 
     void mvInitializeAllocator()
     {   

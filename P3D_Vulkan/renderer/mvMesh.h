@@ -7,7 +7,7 @@
 #include "mvDeletionQueue.h"
 #include "mvMaterial.h"
 
-namespace DearPy3D {
+namespace p3d {
 
     struct mvMesh
     {
@@ -18,7 +18,6 @@ namespace DearPy3D {
     };
 
     mvMesh mvCreateTexturedCube(const std::string& path, float sideLength = 1.0f);
-    mvMesh mvCreateTexturedQuad(const std::string& path, float sideLength = 1.0f);
     void   mvCleanupMesh(mvMesh& mesh);
         
 }
