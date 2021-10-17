@@ -96,11 +96,31 @@ namespace p3d {
 
         pipeline.topology = D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
+        cVertexShader vertexShader = cCreateVertexShader("../../P3D_D3D11/shaders/Solid_VS.hlsl");
+
+        pipeline.vertexShader = vertexShader.shader;
+        pipeline.vertexBlob = vertexShader.blob;
+        pipeline.inputLayout = vertexShader.inputLayout;
+
         D3D11_RASTERIZER_DESC rasterDesc = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
         rasterDesc.CullMode = D3D11_CULL_BACK;
         GContext->graphics.device->CreateRasterizerState(&rasterDesc, pipeline.rasterizationState.GetAddressOf());
 
-		D3D11_DEPTH_STENCIL_DESC dsDesc = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
+        cPixelShader pixelShader = cCreatePixelShader("../../P3D_D3D11/shaders/Solid_PS.hlsl");
+
+        pipeline.pixelShader = pixelShader.shader;
+        pipeline.pixelBlob = pixelShader.blob;
+
+        //Blending
+        D3D11_BLEND_DESC blendDesc = CD3D11_BLEND_DESC{ CD3D11_DEFAULT{} };
+        auto& brt = blendDesc.RenderTarget[0];
+        brt.BlendEnable = TRUE;
+        brt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
+        brt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+        GContext->graphics.device->CreateBlendState(&blendDesc, pipeline.blendState.GetAddressOf());
+
+        //Depth-Stencil
+        D3D11_DEPTH_STENCIL_DESC dsDesc = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
         // Depth test parameters
         dsDesc.DepthEnable = true;
         dsDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
@@ -125,21 +145,6 @@ namespace p3d {
 
         GContext->graphics.device->CreateDepthStencilState(&dsDesc, pipeline.depthStencilState.GetAddressOf());
 
-        D3D11_BLEND_DESC blendDesc = CD3D11_BLEND_DESC{ CD3D11_DEFAULT{} };
-        auto& brt = blendDesc.RenderTarget[0];
-        brt.BlendEnable = TRUE;
-        brt.SrcBlend = D3D11_BLEND_SRC_ALPHA;
-        brt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
-        GContext->graphics.device->CreateBlendState(&blendDesc, pipeline.blendState.GetAddressOf());
-
-        cPixelShader pixelShader = cCreatePixelShader("../../P3D_D3D11/shaders/Solid_PS.hlsl");
-        cVertexShader vertexShader = cCreateVertexShader("../../P3D_D3D11/shaders/Solid_VS.hlsl");
-
-        pipeline.pixelShader = pixelShader.shader;
-        pipeline.pixelBlob = pixelShader.blob;
-        pipeline.vertexShader = vertexShader.shader;
-        pipeline.vertexBlob = vertexShader.blob;
-        pipeline.inputLayout = vertexShader.inputLayout;
         pipeline.viewport.MinDepth = 0.0f;
         pipeline.viewport.MaxDepth = 1.0f;
         pipeline.viewport.TopLeftX = 0.0f;

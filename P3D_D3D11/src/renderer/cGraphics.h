@@ -16,6 +16,7 @@ namespace p3d {
 
     struct cGraphics
     {
+        // D3D11 COM smart pointers 
         cComPtr<ID3D11Buffer>             tranformCBuf;
         cComPtr<ID3D11Texture2D>          frameBuffer;
         cComPtr<ID3D11RenderTargetView>   target;
@@ -23,6 +24,8 @@ namespace p3d {
         cComPtr<IDXGISwapChain>           swapChain;
         cComPtr<ID3D11DeviceContext>      imDeviceContext;  
         cComPtr<ID3D11Device>             device;
+
+        // Meta
         const char*                       shaderRoot;
         std::thread::id                   threadID;
         

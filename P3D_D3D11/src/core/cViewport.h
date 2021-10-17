@@ -12,9 +12,14 @@ namespace p3d {
 
     struct cViewport
     {
+        // Meta
+        HWND hWnd = nullptr;
+
+        // Style
         int  width         = 500;
         int  height        = 500;
-        HWND hWnd          = nullptr;
+
+        // State
         bool resized       = false;    
     };
     

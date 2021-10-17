@@ -54,13 +54,13 @@ namespace p3d {
         // while queue has messages, remove and dispatch them (but do not block on empty queue)
         while (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            // check for quit because peekmessage does not signal this via return val
-            if (msg.message == WM_QUIT)
-                return (int)msg.wParam;
-
             // TranslateMessage will post auxilliary WM_CHAR messages from key msgs
             TranslateMessage(&msg);
             DispatchMessage(&msg);
+
+            // check for quit because peekmessage does not signal this via return val
+            if (msg.message == WM_QUIT)
+                return (int)msg.wParam;
         }
 
         // return empty optional when not quitting app
@@ -107,11 +107,9 @@ namespace p3d {
             return 0;
 
         case WM_DESTROY:
-        {
+
             PostQuitMessage(0);
             break;
-        }
-
         }
 
         return DefWindowProc(hWnd, msg, wParam, lParam);
