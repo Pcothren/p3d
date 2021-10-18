@@ -48,17 +48,21 @@ namespace p3d {
             auto v0 = vertices[14 * indices[i]];
             auto v1 = vertices[14 * indices[i + 1]];
             auto v2 = vertices[14 * indices[i + 2]];
+
             const auto p0 = glm::vec3{ v0, vertices[14 * indices[i] + 1], vertices[14 * indices[i] + 2] };
             const auto p1 = glm::vec3{ v1, vertices[14 * indices[i + 1] + 1], vertices[14 * indices[i + 1] + 2] };
             const auto p2 = glm::vec3{ v2, vertices[14 * indices[i + 2] + 1], vertices[14 * indices[i + 2] + 2] };
 
             const auto n = glm::normalize(glm::cross(p1 - p0, p2 - p0));
+
             vertices[14 * indices[i] + 3] = n[0];
             vertices[14 * indices[i] + 4] = n[1];
             vertices[14 * indices[i] + 5] = n[2];
+
             vertices[14 * indices[i + 1] + 3] = n[0];
             vertices[14 * indices[i + 1] + 4] = n[1];
             vertices[14 * indices[i + 1] + 5] = n[2];
+
             vertices[14 * indices[i + 2] + 3] = n[0];
             vertices[14 * indices[i + 2] + 4] = n[1];
             vertices[14 * indices[i + 2] + 5] = n[2];
