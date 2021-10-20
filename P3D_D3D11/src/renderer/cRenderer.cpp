@@ -77,11 +77,11 @@ namespace p3d {
             pipeline.viewport.Height = GContext->viewport.height;
             GContext->graphics.imDeviceContext->RSSetViewports(1u, &pipeline.viewport);
             GContext->graphics.imDeviceContext->IASetPrimitiveTopology(pipeline.topology);
-            GContext->graphics.imDeviceContext->RSSetState(pipeline.rasterizationState.Get());
-            GContext->graphics.imDeviceContext->OMSetDepthStencilState(pipeline.depthStencilState.Get(), 0xFF);;
             GContext->graphics.imDeviceContext->IASetInputLayout(pipeline.inputLayout.Get());
             GContext->graphics.imDeviceContext->VSSetShader(pipeline.vertexShader.Get(), nullptr, 0);
+            GContext->graphics.imDeviceContext->RSSetState(pipeline.rasterizationState.Get());
             GContext->graphics.imDeviceContext->PSSetShader(pipeline.pixelShader.Get(), nullptr, 0);
+            GContext->graphics.imDeviceContext->OMSetDepthStencilState(pipeline.depthStencilState.Get(), 0xFF);;
             GContext->graphics.imDeviceContext->OMSetBlendState(pipeline.blendState.Get(), nullptr, 0xFFFFFFFFu);
             GContext->graphics.imDeviceContext->HSSetShader(nullptr, nullptr, 0);
             GContext->graphics.imDeviceContext->DSSetShader(nullptr, nullptr, 0);
