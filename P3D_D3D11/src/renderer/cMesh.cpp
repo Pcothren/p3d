@@ -1,10 +1,45 @@
 #include "cMesh.h"
 #include "p3d.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
 
 namespace p3d {
 
     cMesh cCreateTexturedCube(const std::string& path, float size)
     {
+
+        // ... process data if not NULL ...
+        // ... x = width, y = height, n = # 8-bit components per pixel ...
+        // ... replace '0' with '1'..'4' to force that many components per pixel
+        // ... but 'n' will always be the number that it would have been if you said 0
+        int x,y,n;
+        unsigned char *data = stbi_load(path.data(), &x, &y, &n, 0);
+
+        //catch fail for now
+        assert(data);
+
+        // Create texture
+        D3D11_TEXTURE2D_DESC desc;
+        desc.Width = x;
+        desc.Height = y;
+        desc.MipLevels = 0;
+        desc.ArraySize = 1;
+        desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+        desc.SampleDesc.Count = 1;
+        desc.SampleDesc.Quality = 0;
+        desc.Usage = D3D11_USAGE_DEFAULT;
+        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        desc.CPUAccessFlags = 0;
+        desc.MiscFlags = 0;
+
+        D3D11_SUBRESOURCE_DATA initData;
+        initData.pSysMem = data;
+        initData.SysMemPitch = static_cast<UINT>(x*n);
+
+        ID3D11Texture2D* tex = nullptr;
+        HRESULT hr = GContext->graphics.device->CreateTexture2D(&desc, &initData, &tex);
+        assert(SUCCEEDED(hr));
+        stbi_image_free(data);
 
         const float side = size;
         auto vertices = std::vector<float>{
