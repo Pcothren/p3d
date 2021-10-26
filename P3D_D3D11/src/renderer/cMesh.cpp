@@ -22,15 +22,13 @@ namespace p3d {
         D3D11_TEXTURE2D_DESC desc;
         desc.Width = x;
         desc.Height = y;
-        desc.MipLevels = 0;
+        desc.MipLevels = 1;
         desc.ArraySize = 1;
         desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
         desc.SampleDesc.Count = 1;
         desc.SampleDesc.Quality = 0;
         desc.Usage = D3D11_USAGE_DEFAULT;
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        desc.CPUAccessFlags = 0;
-        desc.MiscFlags = 0;
 
         D3D11_SUBRESOURCE_DATA initData;
         initData.pSysMem = data;
@@ -40,6 +38,36 @@ namespace p3d {
         HRESULT hr = GContext->graphics.device->CreateTexture2D(&desc, &initData, &tex);
         assert(SUCCEEDED(hr));
         stbi_image_free(data);
+
+        ID3D11ShaderResourceView* image_shader_resource_view;
+
+        hr = GContext->graphics.device->CreateShaderResourceView(tex, nullptr, &image_shader_resource_view);
+        assert(SUCCEEDED(hr));
+
+        D3D11_SAMPLER_DESC image_sampler_desc = {};
+
+        image_sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        image_sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+        image_sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+        image_sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        image_sampler_desc.MipLODBias = 0.0f;
+        image_sampler_desc.MaxAnisotropy = 1;
+        image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+        image_sampler_desc.BorderColor[0] = 1.0f;
+        image_sampler_desc.BorderColor[1] = 1.0f;
+        image_sampler_desc.BorderColor[2] = 1.0f;
+        image_sampler_desc.BorderColor[3] = 1.0f;
+        image_sampler_desc.MinLOD = -FLT_MAX;
+        image_sampler_desc.MaxLOD = FLT_MAX;
+
+        ID3D11SamplerState* image_sampler_state;
+
+        hr = GContext->graphics.device->CreateSamplerState(&image_sampler_desc, &image_sampler_state);
+
+        assert(SUCCEEDED(hr));
+
+        GContext->graphics.imDeviceContext->PSSetShaderResources(0, 1, &image_shader_resource_view);
+        GContext->graphics.imDeviceContext->PSSetSamplers(0, 1, &image_sampler_state);
 
         const float side = size;
         auto vertices = std::vector<float>{
