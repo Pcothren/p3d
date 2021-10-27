@@ -13,26 +13,28 @@ namespace p3d {
         // ... replace '0' with '1'..'4' to force that many components per pixel
         // ... but 'n' will always be the number that it would have been if you said 0
         int x,y,n;
-        unsigned char *data = stbi_load(path.data(), &x, &y, &n, 0);
+        unsigned char *data = stbi_load(path.data(), &x, &y, &n, 4);
 
         //catch fail for now
         assert(data);
 
         // Create texture
-        D3D11_TEXTURE2D_DESC desc;
+        D3D11_TEXTURE2D_DESC desc{};
         desc.Width = x;
         desc.Height = y;
         desc.MipLevels = 1;
         desc.ArraySize = 1;
-        desc.Format = DXGI_FORMAT_R32G32B32_FLOAT;
+        desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
         desc.SampleDesc.Count = 1;
-        desc.SampleDesc.Quality = 0;
-        desc.Usage = D3D11_USAGE_DEFAULT;
+        desc.Usage = D3D11_USAGE_DYNAMIC;
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+        desc.MiscFlags = 0;
 
-        D3D11_SUBRESOURCE_DATA initData;
+        D3D11_SUBRESOURCE_DATA initData{};
         initData.pSysMem = data;
-        initData.SysMemPitch = static_cast<UINT>(x*n);
+        initData.SysMemPitch = static_cast<UINT>(x*4);
+        initData.SysMemSlicePitch = x*y;
 
         ID3D11Texture2D* tex = nullptr;
         HRESULT hr = GContext->graphics.device->CreateTexture2D(&desc, &initData, &tex);
@@ -44,30 +46,7 @@ namespace p3d {
         hr = GContext->graphics.device->CreateShaderResourceView(tex, nullptr, &image_shader_resource_view);
         assert(SUCCEEDED(hr));
 
-        D3D11_SAMPLER_DESC image_sampler_desc = {};
-
-        image_sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
-        image_sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
-        image_sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
-        image_sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
-        image_sampler_desc.MipLODBias = 0.0f;
-        image_sampler_desc.MaxAnisotropy = 1;
-        image_sampler_desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
-        image_sampler_desc.BorderColor[0] = 1.0f;
-        image_sampler_desc.BorderColor[1] = 1.0f;
-        image_sampler_desc.BorderColor[2] = 1.0f;
-        image_sampler_desc.BorderColor[3] = 1.0f;
-        image_sampler_desc.MinLOD = -FLT_MAX;
-        image_sampler_desc.MaxLOD = FLT_MAX;
-
-        ID3D11SamplerState* image_sampler_state;
-
-        hr = GContext->graphics.device->CreateSamplerState(&image_sampler_desc, &image_sampler_state);
-
-        assert(SUCCEEDED(hr));
-
         GContext->graphics.imDeviceContext->PSSetShaderResources(0, 1, &image_shader_resource_view);
-        GContext->graphics.imDeviceContext->PSSetSamplers(0, 1, &image_sampler_state);
 
         const float side = size;
         auto vertices = std::vector<float>{
