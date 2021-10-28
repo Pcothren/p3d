@@ -24,29 +24,50 @@ namespace p3d {
         desc.Height = y;
         desc.MipLevels = 1;
         desc.ArraySize = 1;
-        desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+        desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
         desc.SampleDesc.Count = 1;
-        desc.Usage = D3D11_USAGE_DYNAMIC;
+        desc.SampleDesc.Quality = 0;
+        desc.Usage = D3D11_USAGE_IMMUTABLE;
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-        desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-        desc.MiscFlags = 0;
 
         D3D11_SUBRESOURCE_DATA initData{};
         initData.pSysMem = data;
         initData.SysMemPitch = static_cast<UINT>(x*4);
-        initData.SysMemSlicePitch = x*y;
 
         ID3D11Texture2D* tex = nullptr;
         HRESULT hr = GContext->graphics.device->CreateTexture2D(&desc, &initData, &tex);
         assert(SUCCEEDED(hr));
+
         stbi_image_free(data);
 
-        ID3D11ShaderResourceView* image_shader_resource_view;
+        ID3D11ShaderResourceView* resource_view{};
 
-        hr = GContext->graphics.device->CreateShaderResourceView(tex, nullptr, &image_shader_resource_view);
+        hr = GContext->graphics.device->CreateShaderResourceView(tex, nullptr, &resource_view);
         assert(SUCCEEDED(hr));
 
-        GContext->graphics.imDeviceContext->PSSetShaderResources(0, 1, &image_shader_resource_view);
+        GContext->graphics.imDeviceContext->PSSetShaderResources(0, 1, &resource_view);
+
+        D3D11_SAMPLER_DESC sampler_desc{};
+        sampler_desc.Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR;
+        sampler_desc.AddressU = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressV = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.AddressW = D3D11_TEXTURE_ADDRESS_CLAMP;
+        sampler_desc.MipLODBias = 0.0f;
+        sampler_desc.MaxAnisotropy = 1;
+        sampler_desc.ComparisonFunc = D3D11_COMPARISON_NEVER;
+        sampler_desc.BorderColor[0] = 1.0f;
+        sampler_desc.BorderColor[1] = 1.0f;
+        sampler_desc.BorderColor[2] = 1.0f;
+        sampler_desc.BorderColor[3] = 1.0f;
+        sampler_desc.MinLOD = -FLT_MAX;
+        sampler_desc.MaxLOD = FLT_MAX;
+
+        ID3D11SamplerState* sampler_state;
+
+        hr = GContext->graphics.device->CreateSamplerState(&sampler_desc, &sampler_state);
+        assert(SUCCEEDED(hr));
+
+        GContext->graphics.imDeviceContext->PSSetSamplers(0, 1, &sampler_state);
 
         const float side = size;
         auto vertices = std::vector<float>{
