@@ -27,7 +27,7 @@ namespace p3d {
         desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
         desc.SampleDesc.Count = 1;
         desc.SampleDesc.Quality = 0;
-        desc.Usage = D3D11_USAGE_IMMUTABLE;
+        desc.Usage = D3D11_USAGE_DEFAULT;
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
         D3D11_SUBRESOURCE_DATA initData{};
@@ -41,7 +41,7 @@ namespace p3d {
         stbi_image_free(data);
 
         ID3D11ShaderResourceView* resource_view{};
-
+        //switch the descriptor to null
         hr = GContext->graphics.device->CreateShaderResourceView(tex, nullptr, &resource_view);
         assert(SUCCEEDED(hr));
 
