@@ -106,6 +106,9 @@ namespace p3d {
             GContext->graphics.imDeviceContext->VSSetConstantBuffers(0u, 1u, GContext->graphics.tranformCBuf.GetAddressOf());
             GContext->graphics.imDeviceContext->IASetIndexBuffer(mesh.indexBuffer.buffer.Get(), DXGI_FORMAT_R32_UINT, 0u);
             GContext->graphics.imDeviceContext->IASetVertexBuffers(0u, 1u, mesh.vertexBuffer.buffer.GetAddressOf(), &mesh.vertexBuffer.stride, &offset);
+
+            GContext->graphics.imDeviceContext->PSSetSamplers(0u, 1, &mesh.sampler.sampler_state);
+            GContext->graphics.imDeviceContext->PSSetShaderResources(0u, 1, &mesh.texture.view);
             
             // draw
             GContext->graphics.imDeviceContext->DrawIndexed(mesh.indexBuffer.count, 0u, 0u);

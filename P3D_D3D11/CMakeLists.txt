@@ -38,7 +38,7 @@ target_sources(p3d_d3d11
 		"../Dependencies/imgui/imgui_tables.cpp"
 		"../Dependencies/imgui/backends/imgui_impl_win32.cpp"
 		"../Dependencies/imgui/backends/imgui_impl_dx11.cpp"
-)
+   "src/renderer/cTexture.h" "src/renderer/cTexture.cpp" "src/renderer/cSampler.cpp" "src/renderer/cSampler.h")
 
 target_include_directories(p3d_d3d11
 

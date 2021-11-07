@@ -3,6 +3,8 @@
 #include <string>
 #include "cMath.h"
 #include "cBuffer.h"
+#include "cTexture.h"
+#include "cSampler.h"
 
 namespace p3d {
 
@@ -12,8 +14,10 @@ namespace p3d {
         cBuffer       vertexBuffer;
         glm::vec3     pos;
         glm::vec3     rot;
+        cTexture      texture;
+        cSampler      sampler = cCreateSampler();
     };
 
-    cMesh cCreateTexturedCube(const std::string& path, float size = 1.0f);
+    cMesh cCreateTexturedCube(cTexture texture, float size = 1.0f);
 
 }
