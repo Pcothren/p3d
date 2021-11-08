@@ -38,6 +38,16 @@ int main()
     cube2.pos.y = 5.0f;
     cube2.pos.z = 5.0f;
 
+    cMesh cube3 = cCreateColorCube({ 1.0f, 0.0f, 0.0f, 1.0f }, 1.0f);
+    cube3.pos.x = 3.0f;
+    cube3.pos.y = 3.0f;
+    cube3.pos.z = 3.0f;
+
+    cMesh cube4 = cCreateColorCube({ 0.0f, 1.0f, 0.0f, 1.0f }, 1.0f);
+    cube4.pos.x = 1.0f;
+    cube4.pos.y = 1.0f;
+    cube4.pos.z = 1.0f;
+
     cTimer timer;
     while (true)
     {
@@ -85,6 +95,8 @@ int main()
         ImGui::Begin("Mesh Controls");
         ImGui::SliderFloat3("Cube 1", &cube1.pos.x, -25.0f, 25.0f);
         ImGui::SliderFloat3("Cube 2", &cube2.pos.x, -25.0f, 25.0f);
+        ImGui::SliderFloat3("Cube 3", &cube3.pos.x, -25.0f, 25.0f);
+        ImGui::SliderFloat3("Cube 4", &cube4.pos.x, -25.0f, 25.0f);
         ImGui::End();
 
         glm::mat4 viewMatrix = cBuildCameraMatrix(camera);
@@ -92,6 +104,8 @@ int main()
 
         Renderer::cRenderMesh(cube1, pipeline, viewMatrix, projMatrix);
         Renderer::cRenderMesh(cube2, pipeline, viewMatrix, projMatrix);
+        Renderer::cRenderMesh(cube3, pipeline, viewMatrix, projMatrix);
+        Renderer::cRenderMesh(cube4, pipeline, viewMatrix, projMatrix);
 
         //-----------------------------------------------------------------------------
         // post draw
