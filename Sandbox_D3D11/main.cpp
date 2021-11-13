@@ -18,6 +18,41 @@ int main()
 
     cPipeline pipeline = cCreatePipeline();
 
+    //stuff for pre texture
+    cComPtr<ID3D11Texture2D> textureBuffer;
+    cComPtr<ID3D11RenderTargetView> targetTexture;
+    cComPtr<ID3D11ShaderResourceView> targetTextureView;
+
+    // create render target
+    D3D11_TEXTURE2D_DESC textureDesc;
+    textureDesc.Width = GContext->viewport.width;
+    textureDesc.Height = GContext->viewport.height;
+    textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+    textureDesc.SampleDesc.Count = 1;
+    textureDesc.SampleDesc.Quality = 0;
+    textureDesc.CPUAccessFlags = 0;
+    textureDesc.ArraySize = 1;
+    textureDesc.Usage = D3D11_USAGE_DEFAULT;
+    textureDesc.MiscFlags = 0;
+    textureDesc.MipLevels = 1;
+    textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+
+    // create 2D texture
+
+    GContext->graphics.device->CreateTexture2D(&textureDesc, NULL, textureBuffer.GetAddressOf());
+
+    // create view of the frame buffer
+    GContext->graphics.device->CreateShaderResourceView(textureBuffer.Get(), NULL, targetTextureView.GetAddressOf());
+
+    // create the target view on the texture
+    D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+    rtvDesc.Format = textureDesc.Format;
+    rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+    rtvDesc.Texture2D = D3D11_TEX2D_RTV{ 0 };
+
+    HRESULT hResult = GContext->graphics.device->CreateRenderTargetView(textureBuffer.Get(), &rtvDesc, targetTexture.GetAddressOf());
+    assert(SUCCEEDED(hResult));
+
     // create camera
     cCamera camera{};
     camera.pos = glm::vec3{ 5.0f, 5.0f, -15.0f };
@@ -76,16 +111,38 @@ int main()
         if (ImGui::GetIO().KeysDown['F']) cTranslateCamera(camera, 0.0f,  -dt, 0.0f);
         if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && !ImGui::GetIO().WantCaptureMouse) cRotateCamera(camera, ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
 
-        Renderer::cBeginFrame();
-
-        ImGuiIO& io = ImGui::GetIO();
-        ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
-            ImColor(0.0f, 1.0f, 0.0f), std::string(std::to_string(io.Framerate) + " FPS").c_str());
+        // seting up first pass clear render target
+        float backgroundColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
+        GContext->graphics.imDeviceContext->ClearRenderTargetView(targetTexture.Get(), backgroundColor);
+        GContext->graphics.imDeviceContext->ClearDepthStencilView(GContext->graphics.targetDepth.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
+        GContext->graphics.imDeviceContext->OMSetRenderTargets(1, targetTexture.GetAddressOf(), GContext->graphics.targetDepth.Get());
 
         //-----------------------------------------------------------------------------
         // user code
         //-----------------------------------------------------------------------------
 
+        glm::mat4 viewMatrix = cBuildCameraMatrix(camera);
+        glm::mat4 projMatrix = cBuildProjectionMatrix(camera);
+
+        Renderer::cRenderMesh(cube1, pipeline, viewMatrix, projMatrix);
+        Renderer::cRenderMesh(cube2, pipeline, viewMatrix, projMatrix);
+        Renderer::cRenderMesh(cube3, pipeline, viewMatrix, projMatrix);
+        Renderer::cRenderMesh(cube4, pipeline, viewMatrix, projMatrix);
+
+        // main pass
+
+        Renderer::cBeginFrame();
+
+        Renderer::cRenderMesh(cube1, pipeline, viewMatrix, projMatrix);
+        Renderer::cRenderMesh(cube2, pipeline, viewMatrix, projMatrix);
+        Renderer::cRenderMesh(cube3, pipeline, viewMatrix, projMatrix);
+        Renderer::cRenderMesh(cube4, pipeline, viewMatrix, projMatrix);
+
+        // Imgui and status
+        ImGuiIO& io = ImGui::GetIO();
+        ImGui::GetForegroundDrawList()->AddText(ImVec2(45, 45),
+            ImColor(0.0f, 1.0f, 0.0f), std::string(std::to_string(io.Framerate) + " FPS").c_str());
+        
         ImGui::Begin("Camera Controls");
         ImGui::SliderFloat3("x", &camera.pos.x, -25.0f, 25.0f);
         ImGui::SliderFloat3("y", &camera.pos.y, -25.0f, 25.0f);
@@ -99,13 +156,9 @@ int main()
         ImGui::SliderFloat3("Cube 4", &cube4.pos.x, -25.0f, 25.0f);
         ImGui::End();
 
-        glm::mat4 viewMatrix = cBuildCameraMatrix(camera);
-        glm::mat4 projMatrix = cBuildProjectionMatrix(camera);
-
-        Renderer::cRenderMesh(cube1, pipeline, viewMatrix, projMatrix);
-        Renderer::cRenderMesh(cube2, pipeline, viewMatrix, projMatrix);
-        Renderer::cRenderMesh(cube3, pipeline, viewMatrix, projMatrix);
-        Renderer::cRenderMesh(cube4, pipeline, viewMatrix, projMatrix);
+        ImGui::Begin("View");
+        ImGui::Image(targetTextureView.Get(), {(float)GContext->viewport.width/4, (float)GContext->viewport.height/4 });
+        ImGui::End();
 
         //-----------------------------------------------------------------------------
         // post draw

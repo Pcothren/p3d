@@ -48,6 +48,8 @@ namespace p3d {
         cTexture texture{};
 
         texture.view = resource_view;
+        texture.width = x;
+        texture.height = y;
 
         return texture;
     }

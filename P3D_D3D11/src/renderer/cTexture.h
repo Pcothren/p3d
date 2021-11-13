@@ -8,6 +8,8 @@ namespace p3d {
     {
         ID3D11ShaderResourceView* view;
         int index = 0;
+        int width = 0;
+        int height = 0;
     };
 
     cTexture cCreateTexture(const std::string& path);
