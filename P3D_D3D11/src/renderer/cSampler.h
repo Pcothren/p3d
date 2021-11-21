@@ -6,7 +6,7 @@ namespace p3d {
 
     struct cSampler
     {
-        ID3D11SamplerState* sampler_state;
+        cComPtr<ID3D11SamplerState> sampler_state;
     };
 
     cSampler cCreateSampler();

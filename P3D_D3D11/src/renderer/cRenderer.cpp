@@ -109,10 +109,10 @@ namespace p3d {
 
             GContext->graphics.imDeviceContext->PSSetConstantBuffers(0u, 1u, mesh.psInfoBuffer.GetAddressOf());
 
-            if (mesh.texture.view)
+            if (mesh.texture.shaderResource)
             {
-                GContext->graphics.imDeviceContext->PSSetSamplers(0u, 1u, &mesh.sampler.sampler_state);
-                GContext->graphics.imDeviceContext->PSSetShaderResources(0u, 1u, &mesh.texture.view);
+                GContext->graphics.imDeviceContext->PSSetSamplers(0u, 1u, mesh.sampler.sampler_state.GetAddressOf());
+                GContext->graphics.imDeviceContext->PSSetShaderResources(0u, 1u, mesh.texture.shaderResource.GetAddressOf());
             }
             
             // draw

@@ -23,7 +23,7 @@ namespace p3d {
 
 
         // create and bind sampler to pixel shader
-        ID3D11SamplerState* sampler_state;
+        cComPtr<ID3D11SamplerState> sampler_state;
 
         HRESULT hr = GContext->graphics.device->CreateSamplerState(&sampler_desc, &sampler_state);
         assert(SUCCEEDED(hr));

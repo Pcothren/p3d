@@ -34,22 +34,62 @@ namespace p3d {
         desc.Usage = D3D11_USAGE_DEFAULT;
         desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
 
-        ID3D11Texture2D* tex = nullptr;
-        HRESULT hr = GContext->graphics.device->CreateTexture2D(&desc, &initData, &tex);
+        cComPtr<ID3D11Texture2D> tex;
+        HRESULT hr = GContext->graphics.device->CreateTexture2D(&desc, &initData, tex.GetAddressOf());
         assert(SUCCEEDED(hr));
 
         stbi_image_free(data);
 
         // create resource view
-        ID3D11ShaderResourceView* resource_view{};
-        hr = GContext->graphics.device->CreateShaderResourceView(tex, nullptr, &resource_view);
+        cComPtr<ID3D11ShaderResourceView> resource_view;
+        hr = GContext->graphics.device->CreateShaderResourceView(tex.Get(), nullptr, resource_view.GetAddressOf());
         assert(SUCCEEDED(hr));
 
         cTexture texture{};
 
-        texture.view = resource_view;
+        texture.shaderResource = resource_view;
         texture.width = x;
         texture.height = y;
+
+        return texture;
+    }
+
+    cTexture cCreateRenderTargetTexture()
+    {
+        // create for texture used in first render pass
+        cComPtr<ID3D11Texture2D> textureBuffer;
+        cComPtr<ID3D11ShaderResourceView> targetTextureView;
+        // create render target
+        D3D11_TEXTURE2D_DESC textureDesc;
+        textureDesc.Width = GContext->viewport.width;
+        textureDesc.Height = GContext->viewport.height;
+        textureDesc.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+        textureDesc.SampleDesc.Count = 1;
+        textureDesc.SampleDesc.Quality = 0;
+        textureDesc.CPUAccessFlags = 0;
+        textureDesc.ArraySize = 1;
+        textureDesc.Usage = D3D11_USAGE_DEFAULT;
+        textureDesc.MiscFlags = 0;
+        textureDesc.MipLevels = 1;
+        textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_RENDER_TARGET;
+        // create 2D texture
+        GContext->graphics.device->CreateTexture2D(&textureDesc, NULL, textureBuffer.GetAddressOf());
+        // create view of the frame buffer
+        GContext->graphics.device->CreateShaderResourceView(textureBuffer.Get(), NULL, targetTextureView.GetAddressOf());
+        // create the target view on the texture
+        cComPtr<ID3D11RenderTargetView> targetTexture;
+        D3D11_RENDER_TARGET_VIEW_DESC rtvDesc = {};
+        rtvDesc.Format = textureDesc.Format;
+        rtvDesc.ViewDimension = D3D11_RTV_DIMENSION_TEXTURE2D;
+        rtvDesc.Texture2D = D3D11_TEX2D_RTV{ 0 };
+        HRESULT hResult = GContext->graphics.device->CreateRenderTargetView(textureBuffer.Get(), &rtvDesc, targetTexture.GetAddressOf());
+        assert(SUCCEEDED(hResult));
+
+        cTexture texture{};
+        texture.renderTarget = targetTexture;
+        texture.shaderResource = targetTextureView;
+        texture.width = GContext->viewport.width;
+        texture.height = GContext->viewport.height;
 
         return texture;
     }
