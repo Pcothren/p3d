@@ -18,7 +18,7 @@ int main()
 
     cPipeline pipeline = cCreatePipeline();
 
-    //stuff for pre texture
+    //create for texture used in first render pass
     cComPtr<ID3D11Texture2D> textureBuffer;
     cComPtr<ID3D11RenderTargetView> targetTexture;
     cComPtr<ID3D11ShaderResourceView> targetTextureView;
@@ -111,7 +111,11 @@ int main()
         if (ImGui::GetIO().KeysDown['F']) cTranslateCamera(camera, 0.0f,  -dt, 0.0f);
         if (ImGui::IsMouseDown(ImGuiMouseButton_Left) && !ImGui::GetIO().WantCaptureMouse) cRotateCamera(camera, ImGui::GetIO().MouseDelta.x, ImGui::GetIO().MouseDelta.y);
 
-        // seting up first pass clear render target
+        //-----------------------------------------------------------------------------
+        // First render pass
+        //----------------------------------------------------------------------------- 
+        // 
+        // setting up first pass clear render target
         float backgroundColor[] = { 0.0f, 0.0f, 0.0f, 1.0f };
         GContext->graphics.imDeviceContext->ClearRenderTargetView(targetTexture.Get(), backgroundColor);
         GContext->graphics.imDeviceContext->ClearDepthStencilView(GContext->graphics.targetDepth.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0u);
@@ -129,7 +133,9 @@ int main()
         Renderer::cRenderMesh(cube3, pipeline, viewMatrix, projMatrix);
         Renderer::cRenderMesh(cube4, pipeline, viewMatrix, projMatrix);
 
-        // main pass
+        //-----------------------------------------------------------------------------
+        // Main render pass
+        //----------------------------------------------------------------------------- 
 
         Renderer::cBeginFrame();
 

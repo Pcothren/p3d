@@ -5,7 +5,7 @@
 cbuffer Info : register(b0)
 {
     float4 psColor;
-    float texture_flag;
+    float texture_flag; // determines if we are rendering a texture or a color cube
 };
 
 //-----------------------------------------------------------------------------
