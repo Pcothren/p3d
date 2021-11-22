@@ -93,4 +93,64 @@ namespace p3d {
 
         return texture;
     }
+
+    cTexture cCreateCubeTexture(const std::string dir) {
+
+        // load in all 6 images
+        std::vector<std::string> paths = { 
+            {dir + "back.png" },
+            {dir + "bottom.png" },
+            {dir + "front.png" },
+            {dir + "left.png" },
+            {dir + "right.png" },
+            {dir + "top.png" } };
+
+        D3D11_SUBRESOURCE_DATA initData[6];
+        int x, y, n;
+        for (int i = 0; i < paths.size(); i++) {
+            unsigned char* data = stbi_load(paths[i].data(), &x, &y, &n, 4);
+            assert(data);
+            initData[i].pSysMem = data;
+            initData[i].SysMemPitch = static_cast<UINT>(x * 4);
+            initData[i].SysMemSlicePitch = 0;
+        }
+
+        // create box texture
+        D3D11_TEXTURE2D_DESC desc;
+        desc.Width = x;
+        desc.Height = y;
+        desc.MipLevels = 1;
+        desc.ArraySize = 6;
+        desc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB;
+        desc.SampleDesc.Count = 1;
+        desc.SampleDesc.Quality = 0;
+        desc.Usage = D3D11_USAGE_DEFAULT;
+        desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+        desc.CPUAccessFlags = 0;
+        desc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+        cComPtr<ID3D11Texture2D> texArray;
+        HRESULT hr = GContext->graphics.device->CreateTexture2D(&desc, initData, texArray.GetAddressOf());
+        assert(SUCCEEDED(hr));
+
+        D3D11_SHADER_RESOURCE_VIEW_DESC viewDesc;
+        viewDesc.Format = desc.Format;
+        viewDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+        viewDesc.TextureCube.MipLevels = desc.MipLevels;
+        viewDesc.TextureCube.MostDetailedMip = 0;
+
+        // create resource view
+        cComPtr<ID3D11ShaderResourceView> resource_view;
+        hr = GContext->graphics.device->CreateShaderResourceView(texArray.Get(), &viewDesc, resource_view.GetAddressOf());
+        assert(SUCCEEDED(hr));
+
+        cTexture texture{};
+
+        texture.shaderResource = resource_view;
+        texture.width = x;
+        texture.height = y;
+
+        return texture;
+    }
+
 }

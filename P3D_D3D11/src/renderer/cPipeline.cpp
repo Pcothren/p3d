@@ -106,6 +106,11 @@ namespace p3d {
         rasterDesc.CullMode = D3D11_CULL_BACK;
         GContext->graphics.device->CreateRasterizerState(&rasterDesc, pipeline.rasterizationState.GetAddressOf());
 
+        // rasterizer for the skybox
+        D3D11_RASTERIZER_DESC rasterDesc2 = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
+        rasterDesc2.CullMode = D3D11_CULL_NONE;
+        GContext->graphics.device->CreateRasterizerState(&rasterDesc2, pipeline.rasterizationStateSkybox.GetAddressOf());
+
         cPixelShader pixelShader = cCreatePixelShader("../../P3D_D3D11/shaders/Solid_PS.hlsl");
 
         pipeline.pixelShader = pixelShader.shader;
@@ -144,6 +149,13 @@ namespace p3d {
         dsDesc.BackFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
 
         GContext->graphics.device->CreateDepthStencilState(&dsDesc, pipeline.depthStencilState.GetAddressOf());
+
+        //Depth-Stencil for the skybox
+        D3D11_DEPTH_STENCIL_DESC dsDesc2 = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
+        dsDesc2.DepthEnable = true;
+        dsDesc2.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+        dsDesc2.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+        GContext->graphics.device->CreateDepthStencilState(&dsDesc2, pipeline.depthStencilStateSkybox.GetAddressOf());
 
         pipeline.viewport.MinDepth = 0.0f;
         pipeline.viewport.MaxDepth = 1.0f;

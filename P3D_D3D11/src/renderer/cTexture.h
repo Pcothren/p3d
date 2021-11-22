@@ -17,4 +17,6 @@ namespace p3d {
 
     cTexture cCreateRenderTargetTexture();
 
+    cTexture cCreateCubeTexture(const std::string dir);
+
 }

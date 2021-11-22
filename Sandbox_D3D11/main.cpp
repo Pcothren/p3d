@@ -18,16 +18,16 @@ int main()
 
     cPipeline pipeline = cCreatePipeline();
 
-    cTexture firstPassTexture = cCreateRenderTargetTexture();
-
     // create camera
     cCamera camera{};
     camera.pos = glm::vec3{ 5.0f, 5.0f, -15.0f };
     camera.aspect = GContext->viewport.width / GContext->viewport.height;
 
     // create textures
+    cTexture firstPassTexture = cCreateRenderTargetTexture();
     cTexture brick_texture = cCreateTexture("../../Resources/brickwall.jpg");
     cTexture sun_texture = cCreateTexture("../../Resources/SkyBox/back.png");
+    cTexture skyboxTex = cCreateCubeTexture("../../Resources/SkyBox/");
 
     // create meshes
     cMesh cube1 = cCreateTexturedCube(brick_texture, 1.0f);
