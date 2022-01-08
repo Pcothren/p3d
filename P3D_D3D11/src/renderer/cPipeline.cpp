@@ -90,6 +90,7 @@ namespace p3d {
         return shader;
     }
 
+    // Vertex Shader, Rasterizer, Pixel Shader, Stencil, Blending
     cPipeline cCreatePipeline()
     {
         cPipeline pipeline{};
@@ -106,7 +107,7 @@ namespace p3d {
         rasterDesc.CullMode = D3D11_CULL_BACK;
         GContext->graphics.device->CreateRasterizerState(&rasterDesc, pipeline.rasterizationState.GetAddressOf());
 
-        // rasterizer for the skybox
+        // Rasterizer for the skybox
         D3D11_RASTERIZER_DESC rasterDesc2 = CD3D11_RASTERIZER_DESC(CD3D11_DEFAULT{});
         rasterDesc2.CullMode = D3D11_CULL_NONE;
         GContext->graphics.device->CreateRasterizerState(&rasterDesc2, pipeline.rasterizationStateSkybox.GetAddressOf());
@@ -116,7 +117,7 @@ namespace p3d {
         pipeline.pixelShader = pixelShader.shader;
         pipeline.pixelBlob = pixelShader.blob;
 
-        //Blending
+        // Blending
         D3D11_BLEND_DESC blendDesc = CD3D11_BLEND_DESC{ CD3D11_DEFAULT{} };
         auto& brt = blendDesc.RenderTarget[0];
         brt.BlendEnable = TRUE;
@@ -124,7 +125,7 @@ namespace p3d {
         brt.DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
         GContext->graphics.device->CreateBlendState(&blendDesc, pipeline.blendState.GetAddressOf());
 
-        //Depth-Stencil
+        // Depth-Stencil
         D3D11_DEPTH_STENCIL_DESC dsDesc = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
         // Depth test parameters
         dsDesc.DepthEnable = true;

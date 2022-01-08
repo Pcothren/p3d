@@ -21,6 +21,6 @@ namespace p3d {
 
     cMesh cCreateTexturedCube(cTexture texture, float size = 1.0f);
     cMesh cCreateColorCube(std::vector<float> color, float size = 1.0f);
-    cMesh cCreateSphere(int LatLines, int LongLines);
+    cMesh cCreateSphere(int LatLines, int LongLines, std::vector<float> color);
 
 }

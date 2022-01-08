@@ -24,7 +24,11 @@ namespace p3d {
     struct cContext
     {
         cIO       IO;
+
+        // Default window struct
         cViewport viewport;
+
+        // Creates all comptrs for direct x
         cGraphics graphics;
     };
 

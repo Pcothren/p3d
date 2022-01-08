@@ -14,12 +14,13 @@ namespace p3d {
             cRecreateSwapChain();
         }
 
+        // Set up viewport, graphics and imgui
         void cStartRenderer()
         {
             cInitializeViewport(1850, 900);
             cSetupGraphics("../../P3D_D3D11/shaders/");
 
-            // Setup Dear ImGui context
+            // Setup Dear ImGui context and IO controls
             IMGUI_CHECKVERSION();
             ImGui::CreateContext();
             ImGuiIO& io = ImGui::GetIO(); (void)io;
@@ -33,6 +34,7 @@ namespace p3d {
             ImGui_ImplDX11_Init(GContext->graphics.device.Get(), GContext->graphics.imDeviceContext.Get());
         }
 
+        // Stop and clean up imgui and render
         void cStopRenderer()
         {
             // Cleanup
