@@ -1,8 +1,6 @@
 #pragma once
 
 #include <string>
-#include "cViewport.h"
-#include "cGraphics.h"
 
 namespace p3d {
 
@@ -18,18 +16,12 @@ namespace p3d {
 
     struct cIO
     {
-        std::string        shaderDirectory;
+
     };
 
     struct cContext
     {
         cIO       IO;
-
-        // Default window struct
-        cViewport viewport;
-
-        // Creates all comptrs for direct x
-        cGraphics graphics;
     };
 
 

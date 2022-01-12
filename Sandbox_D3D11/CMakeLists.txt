@@ -15,13 +15,9 @@ target_include_directories(sandbox_d3d11
 	PRIVATE
 
 		"../P3D_D3D11/"
-		"../P3D_D3D11/src/core/"
-		"../P3D_D3D11/src/renderer/"
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
-		"../Dependencies/stb/"
-		"../Dependencies/glm/"
 
 )
 

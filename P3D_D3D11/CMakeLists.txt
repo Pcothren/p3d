@@ -15,19 +15,8 @@ target_sources(p3d_d3d11
 	PRIVATE
 
 		"p3d.cpp"
-
-		# core
-		"src/core/cViewport.cpp"
-		"src/core/cUtils.cpp"
-		"src/core/cTimer.cpp"
-
-		# renderer
-		"src/renderer/cGraphics.cpp"
-		"src/renderer/cBuffer.cpp"
-		"src/renderer/cRenderer.cpp"
-		"src/renderer/cCamera.cpp"
-		"src/renderer/cMesh.cpp"
-		"src/renderer/cPipeline.cpp"
+		"mvWindowsWindow.cpp"
+		"cTimer.cpp"
 
 		# imgui
 		"../Dependencies/imgui/misc/cpp/imgui_stdlib.cpp"
@@ -37,24 +26,16 @@ target_sources(p3d_d3d11
 		"../Dependencies/imgui/imgui_widgets.cpp"
 		"../Dependencies/imgui/imgui_tables.cpp"
 		"../Dependencies/imgui/backends/imgui_impl_win32.cpp"
-		"../Dependencies/imgui/backends/imgui_impl_dx11.cpp"
-   "src/renderer/cTexture.h" "src/renderer/cTexture.cpp" "src/renderer/cSampler.cpp" "src/renderer/cSampler.h")
+		"../Dependencies/imgui/backends/imgui_impl_dx11.cpp" "mvImGuiConfig.h")
 
 target_include_directories(p3d_d3d11
 
 	PRIVATE
 
 		"."
-		"src/core/"
-		"src/renderer/"
-		"shaders/"
-		"shaders/common/"
 
 		"../Dependencies/imgui/"
 		"../Dependencies/imgui/backends/"
-		"../Dependencies/stb/"
-		"../Dependencies/glm/"
-		"../Dependencies/json/"
 
 )
 
