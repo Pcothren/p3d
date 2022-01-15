@@ -1,0 +1,3 @@
+[submodule "Dependencies/implot"]
+	path = Dependencies/implot
+	url = https://github.com/epezent/implot.git
