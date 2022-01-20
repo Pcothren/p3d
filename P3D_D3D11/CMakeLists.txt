@@ -18,6 +18,11 @@ target_sources(p3d_d3d11
 		"mvWindowsWindow.cpp"
 		"cTimer.cpp"
 
+		# implot
+		"../Dependencies/implot/implot.cpp"
+		"../Dependencies/implot/implot_items.cpp"
+		"../Dependencies/implot/implot_demo.cpp"
+
 		# imgui
 		"../Dependencies/imgui/misc/cpp/imgui_stdlib.cpp"
 		"../Dependencies/imgui/imgui.cpp"
@@ -26,7 +31,7 @@ target_sources(p3d_d3d11
 		"../Dependencies/imgui/imgui_widgets.cpp"
 		"../Dependencies/imgui/imgui_tables.cpp"
 		"../Dependencies/imgui/backends/imgui_impl_win32.cpp"
-		"../Dependencies/imgui/backends/imgui_impl_dx11.cpp" "mvImGuiConfig.h")
+		"../Dependencies/imgui/backends/imgui_impl_dx11.cpp")
 
 target_include_directories(p3d_d3d11
 
@@ -35,6 +40,7 @@ target_include_directories(p3d_d3d11
 		"."
 
 		"../Dependencies/imgui/"
+		"../Dependencies/implot/"
 		"../Dependencies/imgui/backends/"
 
 )

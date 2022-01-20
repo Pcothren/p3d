@@ -1,6 +1,6 @@
 #include "cTimer.h"
 
-namespace p3d {
+namespace mvPlot {
 
 	using namespace std::chrono;
 

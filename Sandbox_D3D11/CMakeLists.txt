@@ -17,6 +17,7 @@ target_include_directories(sandbox_d3d11
 		"../P3D_D3D11/"
 
 		"../Dependencies/imgui/"
+		"../Dependencies/implot/"
 		"../Dependencies/imgui/backends/"
 
 )

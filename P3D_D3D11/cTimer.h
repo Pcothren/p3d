@@ -2,7 +2,7 @@
 
 #include <chrono>
 
-namespace p3d {
+namespace mvPlot {
 
 	class cTimer
 	{
