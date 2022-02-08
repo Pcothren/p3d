@@ -1,4 +1,5 @@
 #include "p3d.h"
+#include "p3d_internal.h"
 #include <assert.h>
 
 namespace mvPlot {
@@ -30,10 +31,41 @@ namespace mvPlot {
 
 	bool BeginPlot(const char* title_id, const ImVec2& size, mvPlotFlags flags)
 	{
-		ImGui::BeginChild(title_id);
-		ImGui::GetWindowDrawList();
+		//setting up imgui child and moving to screen drawing coords sort of like the viewport
+		ImGui::BeginChild(title_id, size);
+		ImVec2 screenSpace = ImGui::GetItemRectSize(); //maybe watch this if the item changes to decide to zoom window?
+		ImDrawList* plot = ImGui::GetWindowDrawList();
+		ImVec2 pCur = ImGui::GetCursorScreenPos();
+
+		float screen_scale[4]{ 1, 1, 1, 1 };
+		float screen_angle[4]{ 0, 0, 0, 1 };
+		float screen_translation[4]{ pCur.x, pCur.y + 100, 0, 1 };
+		float screenTM[16]{
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+		p3d_internal::createCompositionMatrix(&screenTM[0], &screen_scale[0], &screen_angle[0], &screen_translation[0]);
 		return true;
 	}
+
+	bool BeginCoordinateSystem()
+	{
+		// setting up plot transform data sort of like a camera to view up as positive y
+		static float coord_scale[4]{ 1, 1, 1, 1 };
+		static float coord_angle[4]{ 180, 0, 0, 1 };
+		static float coord_translation[4]{ 0, 0, 0, 1 };
+		float coordTM[16]{
+			1.0f, 0.0f, 0.0f, 0.0f,
+			0.0f, 1.0f, 0.0f, 0.0f,
+			0.0f, 0.0f, 1.0f, 0.0f,
+			0.0f, 0.0f, 0.0f, 1.0f
+		};
+
+		return true;
+	}
+
 
 	void EndPlot()
 	{

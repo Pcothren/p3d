@@ -15,6 +15,7 @@ target_sources(p3d_d3d11
 	PRIVATE
 
 		"p3d.cpp"
+		"p3d_internal.cpp"
 		"mvWindowsWindow.cpp"
 		"cTimer.cpp"
 
@@ -31,7 +32,7 @@ target_sources(p3d_d3d11
 		"../Dependencies/imgui/imgui_widgets.cpp"
 		"../Dependencies/imgui/imgui_tables.cpp"
 		"../Dependencies/imgui/backends/imgui_impl_win32.cpp"
-		"../Dependencies/imgui/backends/imgui_impl_dx11.cpp")
+		"../Dependencies/imgui/backends/imgui_impl_dx11.cpp" "p3d_internal.cpp" "p3d_internal.h")
 
 target_include_directories(p3d_d3d11
 

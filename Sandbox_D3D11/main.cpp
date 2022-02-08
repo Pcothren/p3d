@@ -1,6 +1,7 @@
 #include <string>
 #include <imgui_impl_dx11.h>
 #include "p3d.h"
+#include "p3d_internal.h"
 #include "cTimer.h"
 #if defined (_WIN32)
 #include "mvWindowsWindow.h"
@@ -9,16 +10,14 @@
 #include <iostream>
 #include <implot.h>
 
-using namespace mvPlot;
-
 int main()
 {
     auto window = new mvWindowClass();
 
-    mvPlotCreateContext();
+    mvPlot::mvPlotCreateContext();
     window->show();
     window->setup();
-    cTimer timer;
+    mvPlot::cTimer timer;
     while (window->m_running)
     {
 
@@ -116,57 +115,72 @@ int main()
 
                 //    mvPlot::EndPlot();
                 //}
-                static float xs[2] = { -50,300 };
-                static float ys[2] = { 200,300 };
-                static ImVec4 translation = { 0, 0, 0, 1};
-                static ImVec4 scale = { 0, 0, 0, 1};
-                ImGui::DragFloat2("x##mvPlot", &xs[0], 1.0f, -1000.0f, 1000.0f, "%.0f px");
-                ImGui::DragFloat2("y##mvPlot", &ys[0], 1.0f, -1000.0f, 1000.0f, "%.0f px");
-                ImGui::DragFloat4("translate##mvPlot", &translation.x, 1.0f, -1000.0f, 1000.0f, "%.0f px");
-                ImGui::DragFloat4("scale##mvPlot", &scale.x, 1.0f, -1000.0f, 1000.0f, "%.0f px");
-
-                // set up translation matrix
-                float tMat[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
-                tMat[4 * 0 + 3] = translation.x;
-                tMat[4 * 1 + 3] = translation.y;
-                tMat[4 * 2 + 3] = translation.z;
-                // set up translation matrix
-                float sMat[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
-                sMat[4 * 0 + 0] = scale.x;
-                sMat[4 * 1 + 1] = scale.y;
-                sMat[4 * 2 + 2] = scale.z;
-                // set up translation matrix
-                float rMat[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
-                
-                ImVec4 pt0 { xs[0], ys[0], 0, 1};
-                ImVec4 pt1 { xs[1], ys[1], 0, 1};
-
-                float xp0 = tMat[4 * 0 + 0]*pt0.x + tMat[4 * 0 + 1]*pt0.y +  tMat[4 * 0 + 2] * pt0.z + tMat[4 * 0 + 3] * pt0.w;
-                float yp0 = tMat[4 * 1 + 0]*pt0.x + tMat[4 * 1 + 1]*pt0.y +  tMat[4 * 1 + 2] * pt0.z + tMat[4 * 1 + 3] * pt0.w;
-                float zp0 = tMat[4 * 2 + 0]*pt0.x + tMat[4 * 2 + 1]*pt0.y +  tMat[4 * 2 + 2] * pt0.z + tMat[4 * 2 + 3] * pt0.w;
-                float wp0 = tMat[4 * 3 + 0]*pt0.x + tMat[4 * 3 + 1]*pt0.y +  tMat[4 * 3 + 2] * pt0.z + tMat[4 * 3 + 3] * pt0.w;
-
-                float xp1 = sMat[4 * 0 + 0] * pt1.x + sMat[4 * 0 + 1] * pt1.y + sMat[4 * 0 + 2] * pt1.z + sMat[4 * 0 + 3] * pt1.w;
-                float yp1 = sMat[4 * 1 + 0] * pt1.x + sMat[4 * 1 + 1] * pt1.y + sMat[4 * 1 + 2] * pt1.z + sMat[4 * 1 + 3] * pt1.w;
-                float zp1 = sMat[4 * 2 + 0] * pt1.x + sMat[4 * 2 + 1] * pt1.y + sMat[4 * 2 + 2] * pt1.z + sMat[4 * 2 + 3] * pt1.w;
-                float wp1 = sMat[4 * 3 + 0] * pt1.x + sMat[4 * 3 + 1] * pt1.y + sMat[4 * 3 + 2] * pt1.z + sMat[4 * 3 + 3] * pt1.w;
-
-                ImVec4 pt0Final{ xp0, yp0, zp0, wp0 };
-                ImVec4 pt1Final{ xp1, yp1, zp1, wp1 };
 
 
+                // prearing data
+                static float xs[2] { 0,0 };
+                static float ys[2] { 0,25 };
+                ImGui::DragFloat2("x-values##mvPlot", &xs[0], 1.0f, -500.0f, 500.0f, "%.0f px");
+                ImGui::DragFloat2("y-values##mvPlot", &ys[0], 1.0f, -500.0f, 500.0f, "%.0f px");
 
-                ImGui::BeginChild("##MarkerStylesmvPlot");
-                ImDrawList* plot = ImGui::GetWindowDrawList();
-                ImVec2 screenSpace = ImGui::GetItemRectSize();
-                ImVec2 pCur = ImGui::GetCursorScreenPos();
-                ImVec2 p0 = ImVec2(pCur.x + pt0Final.x, pCur.y + pt0Final.y);
-                ImVec2 p1 = ImVec2(pCur.x + pt1Final.x, pCur.y + pt1Final.y);
-                static ImVec4 colf = ImVec4(1.0f, 1.0f, 0.4f, 1.0f);
-                const ImU32 col = ImColor(colf);
-                const ImU32 col_a = ImGui::GetColorU32(IM_COL32(0, 255, 0, 255));
-                plot->AddLine(p0, p1, col, mk_weight);
-                ImGui::EndChild();
+
+                mvPlot::BeginPlot("##MarkerStylesmvPlot", { 100, 100 });
+
+                // setting up plot transform data sort of like a camera to view up as positive y
+                static float plot_scale[4]{ 1, 1, 1, 1 };
+                static float plot_angle[4]{ 180, 0, 0, 1 };
+                static float plot_translation[4]{ 0, 0, 0, 1 };
+                float plotTM[16]{
+                    1.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 1.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 1.0f, 0.0f,
+                    0.0f, 0.0f, 0.0f, 1.0f
+                };
+
+                ////Here to allow for testing
+                //ImGui::DragFloat3("plot scale##mvPlot", &plot_scale[0], .1f, -3.0f, 3.0f, "%.0f px");
+                //ImGui::DragFloat3("plot angle##mvPlot", &plot_angle[0], 1.0f, -360.0f, 360.0f, "%.0f px");
+                //ImGui::DragFloat3("plot translate##mvPlot", &plot_translation[0], 1.0f, -500.0f, 500.0f, "%.0f px");
+                p3d_internal::createCompositionMatrix(&plotTM[0], &plot_scale[0], &plot_angle[0], &plot_translation[0]);
+
+
+                //PLOTTING line
+                // data loaded in as series
+                float pt1[4]{ xs[0], ys[0], 0.0f, 1.0f };
+                float pt2[4]{ xs[1], ys[1], 0.0f, 1.0f };
+                // setting up series transform data
+                static float series_scale[4]{ 1, 1, 1, 1 };
+                static float series_angle[4]{ 0, 0, 0, 1 };
+                static float series_translation[4]{ 0, 0, 0, 1 };
+                float seriesTM[16]{
+                    1.0f, 0.0f, 0.0f, 0.0f,
+                    0.0f, 1.0f, 0.0f, 0.0f,
+                    0.0f, 0.0f, 1.0f, 0.0f,
+                    0.0f, 0.0f, 0.0f, 1.0f
+                };
+                ////here to allow for testing
+                //ImGui::DragFloat3("series scale##mvPlot", &series_scale[0], .1f, -3.0f, 3.0f, "%.0f px");
+                //ImGui::DragFloat3("series rotate##mvPlot", &series_angle[0], 1.0f, -360.f, 360.0f, "%.0f px");
+                //ImGui::DragFloat3("series translate##mvPlot", &series_translation[0], 1.0f, -500.0f, 500.0f, "%.0f px");
+                p3d_internal::createCompositionMatrix(&seriesTM[0], &series_scale[0], &series_angle[0], &series_translation[0]);
+
+
+                //applying transforms to points
+                //TODO: maybe consider multiplying the plot and series matrix into one (series probably ownt change plots very often
+                p3d_internal::multiply4(&pt1[0], &seriesTM[0]);
+                p3d_internal::multiply4(&pt2[0], &seriesTM[0]);
+
+                p3d_internal::multiply4(&pt1[0], &plotTM[0]);
+                p3d_internal::multiply4(&pt2[0], &plotTM[0]);
+
+                p3d_internal::multiply4(&pt1[0], &screenTM[0]);
+                p3d_internal::multiply4(&pt2[0], &screenTM[0]);
+
+                //drawing line
+                const ImU32 col = ImGui::GetColorU32(IM_COL32(0, 255, 0, 255));
+                plot->AddLine({pt1[0], pt1[1]}, { pt2[0], pt2[1] }, col, mk_weight);
+
+                mvPlot::EndPlot();
 
             }
 
@@ -178,5 +192,5 @@ int main()
             window->postrender();
 #endif
     }
-    mvPlotDestroyContext();
+    mvPlot::mvPlotDestroyContext();
 }
