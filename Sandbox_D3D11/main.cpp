@@ -1,7 +1,6 @@
 #include <string>
 #include <imgui_impl_dx11.h>
 #include "p3d.h"
-#include "p3d_internal.h"
 #include "cTimer.h"
 #if defined (_WIN32)
 #include "mvWindowsWindow.h"
@@ -118,68 +117,16 @@ int main()
 
 
                 // prearing data
-                static float xs[2] { 0,0 };
-                static float ys[2] { 0,25 };
+                static float xs[2]{ 0,0 };
+                static float ys[2]{ 0,25 };
                 ImGui::DragFloat2("x-values##mvPlot", &xs[0], 1.0f, -500.0f, 500.0f, "%.0f px");
                 ImGui::DragFloat2("y-values##mvPlot", &ys[0], 1.0f, -500.0f, 500.0f, "%.0f px");
 
 
                 mvPlot::BeginPlot("##MarkerStylesmvPlot", { 100, 100 });
-
-                // setting up plot transform data sort of like a camera to view up as positive y
-                static float plot_scale[4]{ 1, 1, 1, 1 };
-                static float plot_angle[4]{ 180, 0, 0, 1 };
-                static float plot_translation[4]{ 0, 0, 0, 1 };
-                float plotTM[16]{
-                    1.0f, 0.0f, 0.0f, 0.0f,
-                    0.0f, 1.0f, 0.0f, 0.0f,
-                    0.0f, 0.0f, 1.0f, 0.0f,
-                    0.0f, 0.0f, 0.0f, 1.0f
-                };
-
-                ////Here to allow for testing
-                //ImGui::DragFloat3("plot scale##mvPlot", &plot_scale[0], .1f, -3.0f, 3.0f, "%.0f px");
-                //ImGui::DragFloat3("plot angle##mvPlot", &plot_angle[0], 1.0f, -360.0f, 360.0f, "%.0f px");
-                //ImGui::DragFloat3("plot translate##mvPlot", &plot_translation[0], 1.0f, -500.0f, 500.0f, "%.0f px");
-                p3d_internal::createCompositionMatrix(&plotTM[0], &plot_scale[0], &plot_angle[0], &plot_translation[0]);
-
-
-                //PLOTTING line
-                // data loaded in as series
-                float pt1[4]{ xs[0], ys[0], 0.0f, 1.0f };
-                float pt2[4]{ xs[1], ys[1], 0.0f, 1.0f };
-                // setting up series transform data
-                static float series_scale[4]{ 1, 1, 1, 1 };
-                static float series_angle[4]{ 0, 0, 0, 1 };
-                static float series_translation[4]{ 0, 0, 0, 1 };
-                float seriesTM[16]{
-                    1.0f, 0.0f, 0.0f, 0.0f,
-                    0.0f, 1.0f, 0.0f, 0.0f,
-                    0.0f, 0.0f, 1.0f, 0.0f,
-                    0.0f, 0.0f, 0.0f, 1.0f
-                };
-                ////here to allow for testing
-                //ImGui::DragFloat3("series scale##mvPlot", &series_scale[0], .1f, -3.0f, 3.0f, "%.0f px");
-                //ImGui::DragFloat3("series rotate##mvPlot", &series_angle[0], 1.0f, -360.f, 360.0f, "%.0f px");
-                //ImGui::DragFloat3("series translate##mvPlot", &series_translation[0], 1.0f, -500.0f, 500.0f, "%.0f px");
-                p3d_internal::createCompositionMatrix(&seriesTM[0], &series_scale[0], &series_angle[0], &series_translation[0]);
-
-
-                //applying transforms to points
-                //TODO: maybe consider multiplying the plot and series matrix into one (series probably ownt change plots very often
-                p3d_internal::multiply4(&pt1[0], &seriesTM[0]);
-                p3d_internal::multiply4(&pt2[0], &seriesTM[0]);
-
-                p3d_internal::multiply4(&pt1[0], &plotTM[0]);
-                p3d_internal::multiply4(&pt2[0], &plotTM[0]);
-
-                p3d_internal::multiply4(&pt1[0], &screenTM[0]);
-                p3d_internal::multiply4(&pt2[0], &screenTM[0]);
-
-                //drawing line
-                const ImU32 col = ImGui::GetColorU32(IM_COL32(0, 255, 0, 255));
-                plot->AddLine({pt1[0], pt1[1]}, { pt2[0], pt2[1] }, col, mk_weight);
-
+                mvPlot::BeginCoordinateSystem();
+                mvPlot::AddLine("##Line1", xs, ys, 2);
+                mvPlot::EndCoordinateSystem();
                 mvPlot::EndPlot();
 
             }

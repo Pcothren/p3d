@@ -6,6 +6,12 @@
 namespace p3d_internal {
 
 
+	static float identityMatrix16[16]{
+	1.0f, 0.0f, 0.0f, 0.0f,
+	0.0f, 1.0f, 0.0f, 0.0f,
+	0.0f, 0.0f, 1.0f, 0.0f,
+	0.0f, 0.0f, 0.0f, 1.0f
+	};
 
 	struct p3d_point {
 
