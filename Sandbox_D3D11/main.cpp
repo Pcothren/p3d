@@ -117,15 +117,28 @@ int main()
 
 
                 // prearing data
-                static float xs[2]{ 0,0 };
-                static float ys[2]{ 0,25 };
-                ImGui::DragFloat2("x-values##mvPlot", &xs[0], 1.0f, -500.0f, 500.0f, "%.0f px");
-                ImGui::DragFloat2("y-values##mvPlot", &ys[0], 1.0f, -500.0f, 500.0f, "%.0f px");
+                static float xs[5]{ 0, 0, 299, 299, 1};
+                static float ys[5]{ 0, 299, 299, 1, 1};
+                static float zs[5]{ 0, 0, 0, 0, 0};
+                ImGui::DragFloat4("x-values##mvPlot", &xs[0], 1.0f, -500.0f, 500.0f, "%.0f px");
+                ImGui::DragFloat4("y-values##mvPlot", &ys[0], 1.0f, -500.0f, 500.0f, "%.0f px");
+                ImGui::DragFloat4("z-values##mvPlot", &zs[0], 1.0f, -500.0f, 500.0f, "%.0f px");
 
 
-                mvPlot::BeginPlot("##MarkerStylesmvPlot", { 100, 100 });
+                mvPlot::BeginPlot("##MarkerStylesmvPlot", { 300, 300 });
                 mvPlot::BeginCoordinateSystem();
-                mvPlot::AddLine("##Line1", xs, ys, 2);
+                mvPlot::AddSeriesLine("##Line1", xs, ys, zs, 5);
+
+                //mvPlot::ScaleCoordinateSystem();
+                float xs2[2]{ 1,4 };
+                float ys2[2]{ 10,11 };
+                float zs2[2]{ 0,0 };
+
+                //// filled markers
+                //for (int m = 0; m < mvPlot::mvPlotMarker_COUNT; ++m) {
+                //    mvPlot::AddSeriesLine("##Line1", xs2, ys2, zs2, 2);
+                //    ys2[0]--; ys2[1]--;
+                //}
                 mvPlot::EndCoordinateSystem();
                 mvPlot::EndPlot();
 

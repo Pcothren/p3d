@@ -15,17 +15,31 @@ namespace mvPlot {
 
     };
 
+    struct mvTransform {
+
+        // setting up transform data
+        float scale[4]{ 1.0f, 1.0f, 1.0f, 1.0f };
+        float angle[4]{ 0.0f, 0.0f, 0.0f, 1.0f };
+        float translation[4]{ 0.0f, 0.0f, 0.0f, 1.0f };
+
+        // series matrix
+        float mat[16]{
+            1.0f, 0.0f, 0.0f, 0.0f,
+            0.0f, 1.0f, 0.0f, 0.0f,
+            0.0f, 0.0f, 1.0f, 0.0f,
+            0.0f, 0.0f, 0.0f, 1.0f
+        };
+    };
+
     struct mvPlotContext
     {
         mvPlotIO       IO;
 
         ImDrawList* drawList;
 
-        float mvScreenTransform[16]{ 0.0 };
-
-        float mvCoordinateTransform[16]{ 0.0 };
-
-        float mvSeriesTransform[16]{ 0.0 };
+        mvTransform screen;
+        mvTransform coordinateSystem;
+        mvTransform series;
     };
 
     //-----------------------------------------------------------------------------
@@ -299,11 +313,11 @@ namespace mvPlot {
     void EndPlot();
     bool BeginCoordinateSystem();
     void EndCoordinateSystem();
-    bool AddSeries();
+    void ScaleCoordinateSystem(float x, float y, float z);
     void SetupAxes(const char* x_label, const char* y_label, mvPlotAxisFlags x_flags = mvPlotAxisFlags_None, mvPlotAxisFlags y_flags = mvPlotAxisFlags_None);
     void SetupAxesLimits(double x_min, double x_max, double y_min, double y_max, mvPlotCond cond = mvPlotCond_Once);
     void SetNextMarkerStyle(mvPlotMarker marker = mvPlot_AUTO, float size = mvPlot_AUTO, const ImVec4& fill = mvPlot_AUTO_COL, float weight = mvPlot_AUTO, const ImVec4& outline = mvPlot_AUTO_COL);
-    void AddLine(const char* label_id, const float* xs, const float* ys, int count, int offset = 0);
+    void AddSeriesLine(const char* label_id, const float* xs, const float* ys, const float* zs, int count, int offset = 0);
     void PlotText(const char* text, double x, double y, bool vertical = false, const ImVec2& pix_offset = ImVec2(0, 0));
     void PushStyleColor(mvPlotCol idx, const ImVec4& col);
     void PopStyleColor(int count = 1);

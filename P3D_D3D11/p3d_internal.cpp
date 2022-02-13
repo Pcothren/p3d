@@ -121,42 +121,49 @@ namespace p3d_internal {
 		multiply4(pt, rzMat);
 	}
 
-	void createCompositionMatrix(float* matrix, float* scaleModifier, float* angle, float* translateModifier )
+	void modifyCompositionMatrix(float* matrix, float* scaleModifier, float* angle, float* translateModifier )
 	{
-		// prepare scaling modifier matrix data
-		sMat[4 * 0 + 0] = scaleModifier[0];
-		sMat[4 * 1 + 1] = scaleModifier[1];
-		sMat[4 * 2 + 2] = scaleModifier[2];
-		sMat[4 * 3 + 3] = scaleModifier[3];
+		if (scaleModifier != nullptr)
+		{
+			// prepare scaling modifier matrix data
+			sMat[4 * 0 + 0] = scaleModifier[0];
+			sMat[4 * 1 + 1] = scaleModifier[1];
+			sMat[4 * 2 + 2] = scaleModifier[2];
+			sMat[4 * 3 + 3] = scaleModifier[3];
+			multiply16(matrix, sMat);
+		}
 
-		// prepare rotate x modifier matrix data
-		rxMat[4 * 1 + 1] = cosf(TO_RADIANS(angle[0]));
-		rxMat[4 * 1 + 2] = -sinf(TO_RADIANS(angle[0]));
-		rxMat[4 * 2 + 1] = sinf(TO_RADIANS(angle[0]));
-		rxMat[4 * 2 + 2] = cosf(TO_RADIANS(angle[0]));
+		if (angle != nullptr)
+		{
+			// prepare rotate x modifier matrix data
+			rxMat[4 * 1 + 1] = cosf(TO_RADIANS(angle[0]));
+			rxMat[4 * 1 + 2] = -sinf(TO_RADIANS(angle[0]));
+			rxMat[4 * 2 + 1] = sinf(TO_RADIANS(angle[0]));
+			rxMat[4 * 2 + 2] = cosf(TO_RADIANS(angle[0]));
+			// prepare rotate y modifier matrix data
+			ryMat[4 * 0 + 0] = cosf(TO_RADIANS(angle[1]));
+			ryMat[4 * 0 + 2] = sinf(TO_RADIANS(angle[1]));
+			ryMat[4 * 2 + 0] = -sinf(TO_RADIANS(angle[1]));
+			ryMat[4 * 2 + 2] = cosf(TO_RADIANS(angle[1]));
+			// prepare rotate z modifier matrix data
+			rzMat[4 * 0 + 0] = cosf(TO_RADIANS(angle[2]));
+			rzMat[4 * 0 + 1] = -sinf(TO_RADIANS(angle[2]));
+			rzMat[4 * 1 + 0] = sinf(TO_RADIANS(angle[2]));
+			rzMat[4 * 1 + 1] = cosf(TO_RADIANS(angle[2]));
 
-		// prepare rotate y modifier matrix data
-		ryMat[4 * 0 + 0] = cosf(TO_RADIANS(angle[1]));
-		ryMat[4 * 0 + 2] = sinf(TO_RADIANS(angle[1]));
-		ryMat[4 * 2 + 0] = -sinf(TO_RADIANS(angle[1]));
-		ryMat[4 * 2 + 2] = cosf(TO_RADIANS(angle[1]));
+			multiply16(matrix, rxMat);
+			multiply16(matrix, ryMat);
+			multiply16(matrix, rzMat);
+		}
 
-		// prepare rotate z modifier matrix data
-		rzMat[4 * 0 + 0] = cosf(TO_RADIANS(angle[2]));
-		rzMat[4 * 0 + 1] = -sinf(TO_RADIANS(angle[2]));
-		rzMat[4 * 1 + 0] = sinf(TO_RADIANS(angle[2]));
-		rzMat[4 * 1 + 1] = cosf(TO_RADIANS(angle[2]));
-
-		// prepare traslate modifier matrix data
-		tMat[4 * 0 + 3] = translateModifier[0];
-		tMat[4 * 1 + 3] = translateModifier[1];
-		tMat[4 * 2 + 3] = translateModifier[2];
-		tMat[4 * 3 + 3] = translateModifier[3];
-
-		multiply16(matrix, sMat);
-		multiply16(matrix, rxMat);
-		multiply16(matrix, ryMat);
-		multiply16(matrix, rzMat);
-		multiply16(matrix, tMat);
+		if (translateModifier != nullptr)
+		{
+			// prepare traslate modifier matrix data
+			tMat[4 * 0 + 3] = translateModifier[0];
+			tMat[4 * 1 + 3] = translateModifier[1];
+			tMat[4 * 2 + 3] = translateModifier[2];
+			tMat[4 * 3 + 3] = translateModifier[3];
+			multiply16(matrix, tMat);
+		}
 	}
 }

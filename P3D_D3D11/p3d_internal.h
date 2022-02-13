@@ -32,25 +32,6 @@ namespace p3d_internal {
 		};
 	};
 
-	struct p3d_series {
-
-		std::vector<float> xData{};
-		std::vector<float> yData{};
-
-		// setting up series transform data
-		float scale[4]		{ 1, 1, 1, 1 };
-		float angle			{ 0 };
-		float translation[4]{ 0, 0, 0, 1 };
-
-		// series matrix
-		float mat[16]{
-			1.0f, 0.0f, 0.0f, 0.0f,
-			0.0f, 1.0f, 0.0f, 0.0f,
-			0.0f, 0.0f, 1.0f, 0.0f,
-			0.0f, 0.0f, 0.0f, 1.0f
-		};
-	};
-
 	// prepare identity matrix used for scale
 	static float sMat[16]{
 		1.0f, 0.0f, 0.0f, 0.0f,
@@ -91,12 +72,12 @@ namespace p3d_internal {
 		0.0f, 0.0f, 0.0f, 1.0f
 	};
 
-	void multiply16(float* m1, float* m2);
-	void multiply4(float* m1, float* m2);
+	void multiply16(float* m1, float* m2);// m1 is a 4x4 matrix and m2 is a 4x4 modifier
+	void multiply4(float* m1, float* m2);// m1 is a 1x4 matrix and m2 is a 4x4 modifier
 	void scale(float* pt, float* modifier);
 	void translate(float* pt, float* modifier);
 	void rotateX(float* pt, float angle);
 	void rotateY(float* pt, float angle);
 	void rotateZ(float* pt, float angle);
-	void createCompositionMatrix(float* matrix, float* scaleModifier, float* angle, float* translateModifier);
+	void modifyCompositionMatrix(float* matrix, float* scaleModifier = nullptr, float* angle = nullptr, float* translateModifier = nullptr);
 }
