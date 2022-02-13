@@ -134,11 +134,11 @@ int main()
                 float ys2[2]{ 10,11 };
                 float zs2[2]{ 0,0 };
 
-                //// filled markers
-                //for (int m = 0; m < mvPlot::mvPlotMarker_COUNT; ++m) {
-                //    mvPlot::AddSeriesLine("##Line1", xs2, ys2, zs2, 2);
-                //    ys2[0]--; ys2[1]--;
-                //}
+                // filled markers
+                for (int m = 0; m < mvPlot::mvPlotMarker_COUNT; ++m) {
+                    mvPlot::AddSeriesLine("##Line1", xs2, ys2, zs2, 2);
+                    ys2[0]--; ys2[1]--;
+                }
                 mvPlot::EndCoordinateSystem();
                 mvPlot::EndPlot();
 
