@@ -311,12 +311,23 @@ namespace mvPlot {
 
     bool BeginPlot(const char* title_id, const ImVec2& size = ImVec2(-1, 0), mvPlotFlags flags = mvPlotFlags_None);
     void EndPlot();
-    bool BeginCoordinateSystem();
+
+    bool BeginCoordinateSystem(const char* title_id);
     void EndCoordinateSystem();
-    void ScaleCoordinateSystem(float x, float y, float z);
+
+    // Scales the current coorinate system.
+    //TODO: Make this apply to the previous items when an item is named.
+    void Scale(float x = 1.0, float y = 1.0, float z = 1.0, const char* item = nullptr);
+
+    // Translates the current coorinate system
+    //TODO: Make this apply to the previous items when an item is named.
+    void Translate(float x = 0.0, float y = 0.0, float z = 0.0, const char* item = nullptr);
+
     void SetupAxes(const char* x_label, const char* y_label, mvPlotAxisFlags x_flags = mvPlotAxisFlags_None, mvPlotAxisFlags y_flags = mvPlotAxisFlags_None);
     void SetupAxesLimits(double x_min, double x_max, double y_min, double y_max, mvPlotCond cond = mvPlotCond_Once);
     void SetNextMarkerStyle(mvPlotMarker marker = mvPlot_AUTO, float size = mvPlot_AUTO, const ImVec4& fill = mvPlot_AUTO_COL, float weight = mvPlot_AUTO, const ImVec4& outline = mvPlot_AUTO_COL);
+    
+    //Adds a line series to the current or named plot
     void AddSeriesLine(const char* label_id, const float* xs, const float* ys, const float* zs, int count, int offset = 0);
     void PlotText(const char* text, double x, double y, bool vertical = false, const ImVec2& pix_offset = ImVec2(0, 0));
     void PushStyleColor(mvPlotCol idx, const ImVec4& col);

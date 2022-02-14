@@ -58,7 +58,7 @@ namespace mvPlot {
 		return true;
 	}
 
-	bool BeginCoordinateSystem()
+	bool BeginCoordinateSystem(const char* title_id)
 	{
 		mvPlotContext& gp = *GContext;
 
@@ -82,11 +82,18 @@ namespace mvPlot {
 	{
 	}
 
-	void ScaleCoordinateSystem(float x, float y, float z)
+	void Scale(float x, float y, float z, const char* item)
 	{
 		mvPlotContext& gp = *GContext;
 		static float scale[4]{x,y,z,1.0};
 		p3d_internal::modifyCompositionMatrix(&gp.coordinateSystem.mat[0], &scale[0]);
+	}
+
+	void Translate(float x, float y, float z, const char* item)
+	{
+		mvPlotContext& gp = *GContext;
+		static float translate[4]{ x,y,z,1.0 };
+		p3d_internal::modifyCompositionMatrix(&gp.coordinateSystem.mat[0], nullptr, nullptr ,&translate[0]);
 	}
 
 	void SetupAxes(const char* x_label, const char* y_label, mvPlotAxisFlags x_flags, mvPlotAxisFlags y_flags)

@@ -40,7 +40,7 @@ int main()
 
                 if (ImPlot::BeginPlot("##MarkerStyles", ImVec2(-1, 0), ImPlotFlags_CanvasOnly)) {
                     ImPlot::SetupAxes(NULL, NULL, ImPlotAxisFlags_NoDecorations, ImPlotAxisFlags_NoDecorations);
-                    ImPlot::SetupAxesLimits(0, 10, 0, 12);
+                    ImPlot::SetupAxesLimits(1, 11, 0, 12);
 
                     ImS8 xs[2] = { 1,4 };
                     ImS8 ys[2] = { 10,11 };
@@ -126,17 +126,32 @@ int main()
 
 
                 mvPlot::BeginPlot("##MarkerStylesmvPlot", { 300, 300 });
-                mvPlot::BeginCoordinateSystem();
+                mvPlot::BeginCoordinateSystem("##Coord1");
                 mvPlot::AddSeriesLine("##Line1", xs, ys, zs, 5);
 
-                //mvPlot::ScaleCoordinateSystem();
+                // move these into "FitRange(xPair, yPair, zPair, itemName)"
+                // mvPlot::Translate(-1.0);
+                mvPlot::Scale(300.0/10.0,300.0/12.0);
+                // mvPlot::Scale(10.0,12.0);
+                mvPlot::Translate(-30.0);
+
                 float xs2[2]{ 1,4 };
                 float ys2[2]{ 10,11 };
                 float zs2[2]{ 0,0 };
 
                 // filled markers
                 for (int m = 0; m < mvPlot::mvPlotMarker_COUNT; ++m) {
-                    mvPlot::AddSeriesLine("##Line1", xs2, ys2, zs2, 2);
+                    ImGui::PushID(m);
+                    mvPlot::AddSeriesLine("##Closed", xs2, ys2, zs2, 2);
+                    ImGui::PopID();
+                    ys2[0]--; ys2[1]--;
+                }
+                xs2[0] = 6; xs2[1] = 9; ys2[0] = 10; ys2[1] = 11;
+                // open markers
+                for (int m = 0; m < ImPlotMarker_COUNT; ++m) {
+                    ImGui::PushID(m);
+                    mvPlot::AddSeriesLine("##Open", xs2, ys2, zs2, 2);
+                    ImGui::PopID();
                     ys2[0]--; ys2[1]--;
                 }
                 mvPlot::EndCoordinateSystem();
